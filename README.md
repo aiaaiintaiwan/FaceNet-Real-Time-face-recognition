@@ -1,6 +1,9 @@
 # FaceNet-with-TripletLoss
 
 
+
+
+
 My implementation for face recognition using FaceNet model and Triplet Loss. I like to implement different deep learning models architectures. I also like to read about applications and implementations of deep learning models. I have typed this code in my free time as a self learning exercise. So, if you run into some performane issue, i am not an expert , i won't be able to help you. I also don't have hardware to extensively test a heavy model like FaceNet. So, hyperparameters are not tuned at all. Only thing I can assure you is that this implementation works.
 
 
@@ -38,8 +41,14 @@ example:
 
 
 3. Run `train_triplet.py` to train the model. Make changes (if you want) in `parameters.py` to adjust training parameters.
-
-4. Run `webcamFaceRecoMulti.py` to recognize faces in real time. Note- Our dataset must have some images for this script to work.
+~~4. Run `webcamFaceRecoMulti.py` to recognize faces in real time. Note- Our dataset must have some images for this script to work.~~
+4. Run `webcam.py` to recognize faces in real time. 把要對照的人的照片放在`images/` 下，檔名即人名.jpg。檔名不要中文會報錯。
+```
+image/
+│
+└───Person_1.jpg
+└───Person 2.jpg
+```
 
 
 ## Known issues/limitations:

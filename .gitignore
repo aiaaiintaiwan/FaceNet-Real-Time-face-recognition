@@ -1,0 +1,7 @@
+.idea
+data/
+cropped
+checkpoints
+logs
+images
+*.jpg
