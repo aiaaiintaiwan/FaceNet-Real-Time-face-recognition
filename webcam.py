@@ -5,10 +5,22 @@ import time
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 from os.path import isfile
 
-from keras.engine.saving import load_model
+from tensorflow.keras.models import load_model
 
 from fr_utils import *
 from inception_blocks_v2 import *
+
+gpus = tf.config.experimental.list_physical_devices('GPU')
+if gpus:
+    try:
+        # Currently, memory growth needs to be the same across GPUs
+        for gpu in gpus:
+            tf.config.experimental.set_memory_growth(gpu, True)
+        logical_gpus = tf.config.experimental.list_logical_devices('GPU')
+        print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPUs")
+    except RuntimeError as e:
+        # Memory growth must be set before GPUs have been initialized
+        print(e)
 
 K.set_image_data_format('channels_first')
 PADDING = 50

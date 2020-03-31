@@ -1,6 +1,6 @@
 import os
 
-if os.path.exists("./cropped") == False:
+if not os.path.exists("./cropped"):
     os.makedirs("./cropped")
 
 ALPHA = 0.5

@@ -4,7 +4,7 @@ import os
 import random
 
 import cv2
-import keras
+import tensorflow.keras as keras
 import numpy as np
 
 from parameters import IMAGE_SIZE

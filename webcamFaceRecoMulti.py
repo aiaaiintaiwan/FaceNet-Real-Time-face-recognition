@@ -1,13 +1,13 @@
-from keras.models import Sequential
-from keras.layers import Conv2D, ZeroPadding2D, Activation, Input, concatenate
-from keras.models import Model
-from keras.layers.normalization import BatchNormalization
-from keras.layers.pooling import MaxPooling2D, AveragePooling2D
-from keras.layers.merge import Concatenate
-from keras.layers.core import Lambda, Flatten, Dense
-from keras.initializers import glorot_uniform
-from keras.engine.topology import Layer
-from keras import backend as K
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Conv2D, ZeroPadding2D, Activation, Input, concatenate
+from tensorflow.keras.models import Model
+from tensorflow.keras.layers.normalization import BatchNormalization
+from tensorflow.keras.layers.pooling import MaxPooling2D, AveragePooling2D
+from tensorflow.keras.layers.merge import Concatenate
+from tensorflow.keras.layers.core import Lambda, Flatten, Dense
+from tensorflow.keras.initializers import glorot_uniform
+from tensorflow.keras.engine.topology import Layer
+from tensorflow.keras import backend as K
 
 K.set_image_data_format('channels_first')
 import cv2
@@ -25,7 +25,7 @@ import sys
 # =============================================================================
 # np.set_printoptions(threshold=np.nan)
 # =============================================================================
-import keras
+import tensorflow.keras as keras
 
 best_model_path = ""
 if (os.path.exists("bestmodel.txt")):
