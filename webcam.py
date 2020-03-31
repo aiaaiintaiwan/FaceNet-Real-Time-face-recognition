@@ -89,7 +89,7 @@ def webcam_face_recognizer():
     vc = cv2.VideoCapture(0)
     vc
     face_cascade = cv2.CascadeClassifier('./fd_models/haarcascade_frontalface_default.xml')
-    frame_rate = 5
+    frame_rate = 60
     prev = 0
     while vc.isOpened():
         time_elapsed = time.time() - prev

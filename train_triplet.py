@@ -1,13 +1,16 @@
+import tensorflow as tf
 from keras import backend as K
 
 K.set_image_data_format('channels_first')
+
 from fr_utils import *
 from inception_blocks_v2 import *
-import keras
-from generator_utils import *
-from keras.callbacks import EarlyStopping, TensorBoard, ModelCheckpoint
+# from generator_utils import *
+from gen import DataGenerator
+from keras.callbacks import EarlyStopping, TensorBoard, ModelCheckpoint, ReduceLROnPlateau
 import time
 from parameters import *
+import keras
 
 
 def triplet_loss(y_true, y_pred, alpha=ALPHA):
@@ -46,18 +49,25 @@ enc_P = FRmodel(P)
 enc_N = FRmodel(N)
 
 # Callbacks
-early_stopping = EarlyStopping(monitor='loss', patience=5, min_delta=0.00005)
-STAMP = 'facenet_%d' % (len(paths))
+early_stopping = EarlyStopping(monitor='val_loss', patience=30, min_delta=0.00005)
+rd_lr = ReduceLROnPlateau(cooldown=1)
+STAMP = 'facenet_%d' % (time.time())
 checkpoint_dir = './' + 'checkpoints/'  # + str(int(time.time())) + '/'
 
 if not os.path.exists(checkpoint_dir):
     os.makedirs(checkpoint_dir)
 
 tensorboard = TensorBoard(log_dir="logs/{}".format(time.time()))
-cp_callback = ModelCheckpoint(filepath=checkpoint_dir + "ckpt.h5", save_weights_only=False, verbose=1)
+cp_callback = ModelCheckpoint(filepath=checkpoint_dir + "ckpt.h5", save_weights_only=False, verbose=1, save_best_only=True)
 # Model
 tripletModel = Model(inputs=[A, P, N], outputs=[enc_A, enc_P, enc_N])
-tripletModel.compile(optimizer='adam', loss=triplet_loss)
+opt = keras.optimizers.Adam(learning_rate=0.0001, beta_1=0.9, beta_2=0.999, amsgrad=False)
+tripletModel.compile(optimizer=opt, loss=triplet_loss)
 tripletModel.save(checkpoint_dir + "ckpt.h5")
-gen = batch_generator(BATCH_SIZE)
-tripletModel.fit_generator(gen, epochs=NUM_EPOCHS, steps_per_epoch=STEPS_PER_EPOCH, callbacks=[early_stopping, tensorboard, cp_callback])
+train_dataset = DataGenerator("./cropped/*/")
+valid_dataset = DataGenerator("./cropped_val/*/")
+tripletModel.fit_generator(train_dataset,
+                           epochs=NUM_EPOCHS,
+                           callbacks=[rd_lr, tensorboard, cp_callback],
+                           validation_data=valid_dataset
+                           )

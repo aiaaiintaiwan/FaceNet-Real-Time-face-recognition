@@ -1,6 +1,7 @@
 .idea
 data/
 cropped
+cropped_val
 checkpoints
 logs
 images
