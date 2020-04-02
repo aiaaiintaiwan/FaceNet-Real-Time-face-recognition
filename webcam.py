@@ -4,7 +4,7 @@ import time
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 from os.path import isfile
-
+import tensorflow as tf
 from tensorflow.keras.models import load_model
 
 from fr_utils import *
@@ -23,13 +23,14 @@ if gpus:
         print(e)
 
 K.set_image_data_format('channels_first')
-PADDING = 50
+PADDING = 10
 ready_to_detect_identity = True
-THRESHOLD = .65
+THRESHOLD = 1.
 # FRmodel = faceRecoModel(input_shape=(3, 96, 96))
 if not isfile("checkpoints/facenet.h5"):
     full_model: Model = load_model("checkpoints/ckpt.h5", compile=False)
-    fr_model = Model(inputs=full_model.get_layer("FaceRecoModel").inputs, outputs=full_model.get_layer("FaceRecoModel").outputs)
+    fr_model = Model(inputs=full_model.get_layer("FaceRecoModel").inputs,
+                     outputs=full_model.get_layer("FaceRecoModel").outputs)
     fr_model.save("checkpoints/facenet.h5")
 else:
     fr_model = load_model("checkpoints/facenet.h5", compile=False)
@@ -99,7 +100,6 @@ def webcam_face_recognizer():
 
     cv2.namedWindow("preview")
     vc = cv2.VideoCapture(0)
-    vc
     face_cascade = cv2.CascadeClassifier('./fd_models/haarcascade_frontalface_default.xml')
     frame_rate = 60
     prev = 0
@@ -130,7 +130,7 @@ def process_frame(img, frame, face_cascade):
     """
     global ready_to_detect_identity
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    faces = face_cascade.detectMultiScale(gray, 1.3, 5)
+    faces = face_cascade.detectMultiScale(gray, 1.3, 5)  # , 1.3, 5
 
     # Loop through all the faces detected and determine whether or not they are in the database
     identities = []
@@ -147,7 +147,8 @@ def process_frame(img, frame, face_cascade):
         if identity is not None:
             # identities.append(identity)  # 把who_is_it回傳的人名家到字典"identities"裡面
             img = cv2.rectangle(frame, (x1 - 10, y1 - 30), (x1 + 90, y1 + 10), (0, 0, 0), cv2.FILLED)
-            img = cv2.putText(img, identity, (x1, y1 - 10), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 255, 0), 1, cv2.LINE_AA)
+            img = cv2.putText(img, identity, (x1, y1 - 10), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 255, 0), 1,
+                              cv2.LINE_AA)
     # if identities:  # 如果字典有人名
     # #     cv2.imwrite('example.png', img)
     #
