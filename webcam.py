@@ -130,7 +130,7 @@ def process_frame(img, frame, face_cascade):
     """
     global ready_to_detect_identity
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    faces = face_cascade.detectMultiScale(gray, 1.3, 5)  # , 1.3, 5
+    faces = face_cascade.detectMultiScale(gray)  # , 1.3, 5
 
     # Loop through all the faces detected and determine whether or not they are in the database
     identities = []
