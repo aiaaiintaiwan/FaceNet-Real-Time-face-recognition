@@ -4,7 +4,7 @@ import time
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 from os.path import isfile
-import tensorflow as tf
+
 from tensorflow.keras.models import load_model
 
 from fr_utils import *
@@ -23,9 +23,9 @@ if gpus:
         print(e)
 
 K.set_image_data_format('channels_first')
-PADDING = 10
+PADDING = 5
 ready_to_detect_identity = True
-THRESHOLD = 1.
+THRESHOLD = .75
 # FRmodel = faceRecoModel(input_shape=(3, 96, 96))
 if not isfile("checkpoints/facenet.h5"):
     full_model: Model = load_model("checkpoints/ckpt.h5", compile=False)
@@ -100,7 +100,8 @@ def webcam_face_recognizer():
 
     cv2.namedWindow("preview")
     vc = cv2.VideoCapture(0)
-    face_cascade = cv2.CascadeClassifier('./fd_models/haarcascade_frontalface_default.xml')
+    ear_cascade_left = cv2.CascadeClassifier('./fd_models/haarcascade_mcs_leftear.xml')
+    ear_cascade_right = cv2.CascadeClassifier('./fd_models/haarcascade_mcs_rightear.xml')
     frame_rate = 60
     prev = 0
     while vc.isOpened():
@@ -114,7 +115,7 @@ def webcam_face_recognizer():
 
             # We do not want to detect a new identity while the program is in the process of identifying another person
             if ready_to_detect_identity:
-                img = process_frame(img, frame, face_cascade)
+                img = process_frame(img, frame, ear_cascade_left, ear_cascade_right)
                 cv2.imshow("preview", img)
 
         key = cv2.waitKey(100)
@@ -124,17 +125,22 @@ def webcam_face_recognizer():
     cv2.destroyWindow("preview")
 
 
-def process_frame(img, frame, face_cascade):
+def process_frame(img, frame, ear_cascade_left, ear_cascade_right):
     """
     Determine whether the current frame contains the faces of people from our database
     """
     global ready_to_detect_identity
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    faces = face_cascade.detectMultiScale(gray)  # , 1.3, 5
-
+    left_ears = ear_cascade_left.detectMultiScale(gray)
+    right_ears = ear_cascade_right.detectMultiScale(gray)
+    ears = []
+    for i in left_ears:
+        ears.append(i)
+    for i in right_ears:
+        ears.append(i)
     # Loop through all the faces detected and determine whether or not they are in the database
     identities = []
-    for (x, y, w, h) in faces:
+    for (x, y, w, h) in ears:
         x1 = x - PADDING
         y1 = y - PADDING
         x2 = x + w + PADDING

@@ -84,7 +84,8 @@ with strategy.scope():
     tripletModel.fit(train_dataset,
                      epochs=NUM_EPOCHS,
                      callbacks=[rd_lr, tensorboard, cp_callback],
-                     validation_data=valid_dataset
+                     validation_data=valid_dataset,
+                     use_multiprocessing=True
                      )
 # tripletModel.fit_generator(train_dataset,
 #                            epochs=NUM_EPOCHS,

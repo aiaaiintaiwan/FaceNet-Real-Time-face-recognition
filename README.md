@@ -44,7 +44,7 @@ example:
 ~~4. Run `webcamFaceRecoMulti.py` to recognize faces in real time. Note- Our dataset must have some images for this script to work.~~
 4. Run `webcam.py` to recognize faces in real time. 把要對照的人的照片放在`images/` 下，檔名即人名.jpg。檔名不要中文會報錯。
 ```
-image/
+images/
 │
 └───Person_1.jpg
 └───Person 2.jpg
